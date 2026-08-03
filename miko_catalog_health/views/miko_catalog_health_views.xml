@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Audit list: the worst products first, so fixing can start immediately. -->
+    <record id="view_catalog_health_list" model="ir.ui.view">
+        <field name="name">product.template.catalog.health.list</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <list string="Catalog Health" default_order="ch_issue_count desc,name"
+                  editable="bottom" create="false">
+                <!-- Columns are deliberately few. Everything here is either the
+                     problem, the fix, or how to find the product. Reference,
+                     price and category are one click away under the column
+                     picker and Odoo remembers the choice per user. -->
+                <field name="name" readonly="1"/>
+                <field name="barcode"/>
+                <field name="ch_barcode_status" readonly="1"
+                       decoration-danger="ch_barcode_status in ('checksum','duplicate')"
+                       decoration-warning="ch_barcode_status == 'missing'"
+                       decoration-muted="ch_barcode_status in ('ok','na','nonnumeric','length')"/>
+                <field name="ch_barcode_expected" readonly="1" optional="show"/>
+                <field name="ch_missing" readonly="1" optional="show"/>
+                <field name="default_code" optional="hide"/>
+                <field name="list_price" optional="hide"/>
+                <field name="categ_id" optional="hide"/>
+                <field name="ch_issue_count" readonly="1" decoration-danger="ch_issue_count &gt; 2" decoration-warning="ch_issue_count &gt; 0"/>
+                <field name="ch_is_healthy" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_catalog_health_search" model="ir.ui.view">
+        <field name="name">product.template.catalog.health.search</field>
+        <field name="model">product.template</field>
+        <field name="arch" type="xml">
+            <search string="Catalog Health">
+                <field name="name"/>
+                <field name="default_code"/>
+                <field name="barcode"/>
+
+                <filter name="has_issues" string="Has Issues"
+                        domain="[('ch_is_healthy','=',False)]"/>
+                <filter name="healthy" string="No Issues"
+                        domain="[('ch_is_healthy','=',True)]"/>
+                <separator/>
+                <filter name="bad_checksum" string="Bad Check Digit"
+                        domain="[('ch_barcode_status','=','checksum')]"
+                        help="Barcode is the right length but the final digit is wrong. These will not scan."/>
+                <filter name="duplicate_barcode" string="Duplicate Barcode"
+                        domain="[('ch_barcode_status','=','duplicate')]"/>
+                <filter name="no_barcode" string="No Barcode"
+                        domain="[('ch_barcode_status','=','missing')]"/>
+                <filter name="odd_barcode" string="Not a GTIN (internal code)"
+                        domain="[('ch_barcode_status','in',('nonnumeric','length'))]"
+                        help="Reported for information only. Internal codes are a legitimate choice and are not counted as issues."/>
+                <separator/>
+                <filter name="no_price" string="No Sales Price"
+                        domain="[('list_price','=',0)]"/>
+                <filter name="no_reference" string="No Internal Reference"
+                        domain="[('default_code','=',False)]"/>
+
+                <!-- Group By. Odoo 19 dropped expand= and string= from search
+                     groups, so this is a bare <group> as core now writes it. -->
+                <group>
+                    <filter name="group_barcode_status" string="Barcode Check"
+                            context="{'group_by': 'ch_barcode_status'}"/>
+                    <filter name="group_category" string="Product Category"
+                            context="{'group_by': 'categ_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_catalog_health" model="ir.actions.act_window">
+        <field name="name">Catalog Health</field>
+        <field name="res_model">product.template</field>
+        <field name="view_mode">list,form</field>
+        <field name="view_id" ref="view_catalog_health_list"/>
+        <field name="search_view_id" ref="view_catalog_health_search"/>
+        <field name="context">{'search_default_has_issues': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Nothing to fix. Your catalog is clean.
+            </p>
+            <p>
+                If you have just installed this module, run
+                <b>Catalog Health &gt; Rescan Catalog</b> once so existing
+                products are checked.
+            </p>
+        </field>
+    </record>
+
+    <!-- One explicit pass, needed once after install because stored computes
+         only refresh when a dependency changes. -->
+    <record id="action_catalog_health_rescan" model="ir.actions.server">
+        <field name="name">Rescan Catalog</field>
+        <field name="model_id" ref="product.model_product_template"/>
+        <field name="state">code</field>
+        <field name="code">action = model.action_catalog_health_rescan()</field>
+    </record>
+
+    <!-- Own root menu deliberately. Parenting to stock/inventory would tie the
+         module to an xmlid that has moved between Odoo versions, and would force
+         a dependency on stock for what is a pure product-data tool. -->
+    <menuitem id="menu_catalog_health_root"
+              name="Catalog Health"
+              web_icon="miko_catalog_health,static/description/icon.png"
+              sequence="95"/>
+
+    <menuitem id="menu_catalog_health_audit"
+              name="Audit"
+              parent="menu_catalog_health_root"
+              action="action_catalog_health"
+              sequence="10"/>
+
+    <menuitem id="menu_catalog_health_rescan"
+              name="Rescan Catalog"
+              parent="menu_catalog_health_root"
+              action="action_catalog_health_rescan"
+              sequence="20"/>
+
+</odoo>

@@ -1,0 +1,295 @@
+<section class="ch-listing">
+
+<style>
+/* Scoped to .ch-listing so nothing here can leak into the App Store chrome. */
+.ch-listing{--ink:#0F172A;--muted:#475569;--line:#E2E8F0;--red:#DC2626;--plum:#714B67;
+  color:var(--ink);background:#fff;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;line-height:1.62;-webkit-font-smoothing:antialiased}
+.ch-listing *{box-sizing:border-box}
+.ch-listing img{max-width:100%;height:auto;display:block}
+.ch-wrap{max-width:1000px;margin:0 auto;padding:0 22px}
+.ch-listing h2{font-size:31px;line-height:1.22;font-weight:800;letter-spacing:-.02em;
+  color:var(--ink);margin:0 0 14px}
+.ch-listing h3{font-size:19px;font-weight:700;color:var(--ink);margin:0 0 7px}
+.ch-listing p{color:var(--muted);margin:0 0 15px}
+.ch-listing p.lead{font-size:18.5px;color:#334155}
+.ch-sec{padding:44px 0;border-top:1px solid var(--line)}
+.ch-sec:first-of-type{border-top:0}
+.ch-hero{padding:0 0 8px}
+.ch-hero img{border-radius:14px}
+
+.ch-fact{background:#FDF3F3;border:1px solid #F6D7D7;border-left:4px solid var(--red);
+  border-radius:12px;padding:20px 22px;margin:22px 0}
+.ch-fact p{color:#7F1D1D;margin:0}
+.ch-fact strong{color:#991B1B}
+
+.ch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(232px,1fr));gap:18px;margin-top:24px}
+/* Four cards in an auto-fit grid orphan the fourth onto its own row. Two up. */
+.ch-grid.ch-grid-2{grid-template-columns:repeat(2,1fr)}
+@media (max-width:640px){.ch-grid.ch-grid-2{grid-template-columns:1fr}}
+.ch-card{border:1px solid var(--line);border-radius:13px;padding:19px 20px;background:#fff}
+.ch-card p{font-size:15px;margin:0}
+
+.ch-shot{margin:24px 0 8px;border:1px solid var(--line);border-radius:13px;overflow:hidden;
+  box-shadow:0 8px 26px rgba(15,23,42,.07)}
+.ch-cap{font-size:14px;color:#64748B;margin:11px 0 0}
+
+.ch-table-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin-top:20px}
+.ch-listing table{border-collapse:collapse;width:100%;min-width:520px;font-size:15px}
+.ch-listing th,.ch-listing td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line)}
+.ch-listing th{font-weight:700;color:var(--ink);background:#F8FAFC;white-space:nowrap}
+.ch-listing td{color:var(--muted)}
+.ch-listing td code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13.5px;
+  background:#F1F5F9;padding:2px 6px;border-radius:5px;color:var(--ink)}
+
+.ch-list{margin:0;padding-left:20px}
+.ch-list li{color:var(--muted);margin-bottom:9px}
+.ch-list li::marker{color:var(--plum)}
+
+.ch-foot{background:#F8FAFC;border:1px solid var(--line);border-radius:14px;padding:26px 28px;margin-top:8px}
+.ch-foot p:last-child{margin-bottom:0}
+.ch-foot a{color:var(--plum);font-weight:600;text-decoration:none}
+.ch-foot a:hover{text-decoration:underline}
+
+@media (max-width:640px){
+  .ch-listing h2{font-size:25px}
+  .ch-listing p.lead{font-size:17px}
+  .ch-sec{padding:34px 0}
+}
+</style>
+
+<div class="ch-wrap">
+
+  <div class="ch-hero">
+    <img src="miko_catalog_health/static/description/banner.png"
+         alt="Catalog Health for Odoo: some of your barcodes will never scan">
+  </div>
+
+  <div class="ch-sec">
+    <h2>Odoo checks that a barcode is unique. It never checks that it is valid.</h2>
+    <p class="lead">Every retail barcode ends in a check digit, calculated from the digits
+    before it. Get that one digit wrong and the number still looks perfectly normal in
+    a list view, still saves without complaint, and still fails at the scanner. Nobody
+    finds out until someone is standing at a till or a receiving bay with a product
+    that will not go through.</p>
+
+    <p>Odoo enforces uniqueness on barcodes, so it will stop you entering the same one
+    twice. It does no arithmetic on them at all. A transposed pair of digits during a
+    supplier import, a hand-typed number, a spreadsheet that dropped a leading zero:
+    all of it saves cleanly and sits in your catalog until it costs you time at the
+    counter.</p>
+
+    <div class="ch-fact">
+      <p><strong>This is not hypothetical.</strong> The demo catalog that ships inside
+      Odoo 19 itself contains two ITF-14 barcodes with an incorrect check digit. Install
+      this module on a fresh Odoo database with demo data and it finds both of them in
+      the first scan.</p>
+    </div>
+  </div>
+
+  <div class="ch-sec">
+    <h2>Find every broken barcode, and the digit that fixes it</h2>
+    <p>Catalog Health validates every barcode in your catalog against the GS1
+    modulo-10 standard and tells you, for each broken one, exactly which digit it
+    should have ended with. You are not left to work it out yourself.</p>
+
+    <div class="ch-shot">
+      <img src="miko_catalog_health/static/description/screenshot_check_digits.png"
+           alt="The audit list filtered to barcodes with a wrong check digit, each showing the digit it should end with">
+    </div>
+    <p class="ch-cap">Filtered to barcodes that will not scan. Flipover and Office Lamp
+    are Odoo's own demo products.</p>
+
+    <div class="ch-table-scroll">
+      <table>
+        <thead>
+          <tr><th>Symbology</th><th>Length</th><th>Typically used for</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><code>EAN-13</code></td><td>13 digits</td><td>Retail products, most of the world</td></tr>
+          <tr><td><code>UPC-A</code></td><td>12 digits</td><td>Retail products, North America</td></tr>
+          <tr><td><code>EAN-8</code></td><td>8 digits</td><td>Small packaging</td></tr>
+          <tr><td><code>ITF-14</code></td><td>14 digits</td><td>Outer cases and cartons</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ch-cap">Anything that is not one of these lengths is reported separately as
+    a non-standard barcode rather than as an error, because internal codes are perfectly
+    legitimate and should not be treated as breakage.</p>
+  </div>
+
+  <div class="ch-sec">
+    <h2>And the gaps that quietly break everything else</h2>
+    <p>While it is reading the catalog it also reports what is simply not filled in.
+    Each product gets an issue count, and the list opens with the worst offenders first
+    so there is an obvious place to start.</p>
+
+    <div class="ch-shot">
+      <img src="miko_catalog_health/static/description/screenshot_audit.png"
+           alt="The full Catalog Health audit list, sorted with the most incomplete products first">
+    </div>
+    <p class="ch-cap">The full audit. Edit straight in the list and the status updates as
+    you go.</p>
+
+    <p>Here is every check the module makes, and exactly which ones count against a
+    product. Nothing is hidden behind a score.</p>
+
+    <div class="ch-table-scroll">
+      <table>
+        <thead>
+          <tr><th>Check</th><th>What it reports</th><th>Counted as an issue</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Wrong check digit</strong></td>
+            <td>The right length and all digits, but the final digit does not match
+            the GS1 calculation. This barcode will not scan. The correct digit is
+            shown next to it.</td>
+            <td><strong>Yes</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Duplicate barcode</strong></td>
+            <td>The same barcode on more than one product. Odoo blocks this on entry,
+            so it only appears through imports, restores and multi company setups.</td>
+            <td><strong>Yes</strong></td>
+          </tr>
+          <tr>
+            <td><strong>No barcode</strong></td>
+            <td>A physical product with nothing in the barcode field. Services are
+            excluded and shown as <em>Not applicable</em>.</td>
+            <td><strong>Yes</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Not a GTIN</strong></td>
+            <td>An internal code such as <code>CUP-FILT-100</code>, or a length that
+            is not 8, 12, 13 or 14. Shown so you can see it, never treated as broken.</td>
+            <td>No, information only</td>
+          </tr>
+          <tr>
+            <td><strong>No internal reference</strong></td>
+            <td>The code your team actually says out loud when they talk about a
+            product.</td>
+            <td><strong>Yes</strong></td>
+          </tr>
+          <tr>
+            <td><strong>No sales price</strong></td>
+            <td>Sitting at zero, which is almost never deliberate on something you
+            sell.</td>
+            <td><strong>Yes</strong></td>
+          </tr>
+          <tr>
+            <td><strong>No product category</strong></td>
+            <td>Category is not required by Odoo, and an empty one quietly breaks
+            reporting, pricelist rules and accounting mappings.</td>
+            <td><strong>Yes</strong></td>
+          </tr>
+          <tr>
+            <td><strong>No unit of measure</strong></td>
+            <td>Breaks stock moves and purchase conversions.</td>
+            <td><strong>Yes</strong></td>
+          </tr>
+          <tr>
+            <td><strong>No image</strong></td>
+            <td>Detected without loading a single image file, so a large catalog
+            still scans quickly.</td>
+            <td><strong>Yes</strong></td>
+          </tr>
+          <tr>
+            <td><strong>Cost price</strong></td>
+            <td>Shown for context. A zero cost is legitimate in plenty of businesses,
+            so it is never held against a product.</td>
+            <td>No, information only</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="ch-sec">
+    <h2>It does not cry wolf, and we can show our working</h2>
+    <p>A tool that flags correct data, or hands back a fix that is still wrong, is
+    worse than no tool. Both failure modes are tested rather than asserted, and the
+    tests ship inside the module so you can run them yourself.</p>
+
+    <div class="ch-grid ch-grid-2">
+      <div class="ch-card"><h3>Checked against real barcodes</h3><p>Products in
+      circulation with known good check digits, across all four symbologies. None of
+      them is flagged.</p></div>
+      <div class="ch-card"><h3>Checked against a second implementation</h3><p>The
+      standard is implemented twice, independently and in opposite directions. Across
+      400,000 generated barcodes the two never disagreed once.</p></div>
+      <div class="ch-card"><h3>Every suggested fix round trips</h3><p>For each broken
+      barcode, applying the digit we suggest produces a valid barcode, and all nine
+      other digits are correctly rejected.</p></div>
+      <div class="ch-card"><h3>Your conventions are respected</h3><p>Internal codes
+      and service products are reported for visibility and never counted as
+      defects.</p></div>
+    </div>
+
+    <p class="ch-cap">Run the suite yourself with
+    <code>--test-enable --test-tags /miko_catalog_health</code>. It covers 20 cases and
+    is run against Odoo 14 through 19 before every release.</p>
+  </div>
+
+  <div class="ch-sec">
+    <h2>Fix them where you found them</h2>
+    <p>The audit list is editable. Correct a barcode, add the missing reference, set the
+    price, and the status recalculates immediately. There is no separate wizard to learn
+    and no export and reimport cycle.</p>
+    <ul class="ch-list">
+      <li>Filter to one kind of problem at a time, so a session has a clear end point.</li>
+      <li>Group by barcode check or by product category to see where the rot is concentrated.</li>
+      <li>Run <strong>Rescan Catalog</strong> once after installing, so products that
+      were imported before the module existed get checked.</li>
+    </ul>
+  </div>
+
+  <div class="ch-sec">
+    <h2>What it deliberately does not do</h2>
+    <p>Being clear about this is more useful to you than a longer feature list.</p>
+    <ul class="ch-list">
+      <li>It does not generate barcodes or buy GS1 prefixes for you. It validates what
+      you already have.</li>
+      <li>It does not send your catalog anywhere. There is no external service, no API
+      key and no account. Everything runs inside your own database.</li>
+      <li>It does not write to your products on its own. It reads, it reports, and you
+      decide what to change.</li>
+      <li>It adds no new models and no new access rules, so it changes nothing about who
+      can see what.</li>
+    </ul>
+  </div>
+
+  <div class="ch-sec">
+    <h2>Technical notes</h2>
+    <div class="ch-table-scroll">
+      <table>
+        <tbody>
+          <tr><th>Odoo versions</th><td><strong>14.0 through 19.0</strong>, Community and Enterprise. Six series, each built and tested separately.</td></tr>
+          <tr><th>Hosting</th><td>Odoo.sh and on premise. Odoo Online cannot run third party modules that contain Python, which includes this one, per the Odoo Apps FAQ.</td></tr>
+          <tr><th>Depends on</th><td><code>product</code> only. No Inventory or Sales requirement.</td></tr>
+          <tr><th>Adds</th><td>Five stored, indexed fields on <code>product.template</code></td></tr>
+          <tr><th>Licence</th><td>LGPL-3</td></tr>
+          <tr><th>Tests</th><td>20 automated tests, run on all six series against real published GS1 barcodes</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ch-cap">The fields are stored and indexed, so filtering and grouping stay
+    fast on a large catalog rather than recalculating on every view.</p>
+  </div>
+
+  <div class="ch-sec">
+    <div class="ch-foot">
+      <h3>A Miko app, built by Tripster Developers</h3>
+      <p>Miko is our family of business software. We are a software engineering firm in
+      New Zealand, and we build and support Odoo for businesses that run their operations
+      on it, from implementation and custom modules through to integrations with the other
+      systems they already depend on.</p>
+      <p>If this module found something you would rather it had not, we can help you fix
+      the process that put it there.
+      <a href="https://tripsterdevelopers.com/odoo/">tripsterdevelopers.com/odoo</a></p>
+    </div>
+  </div>
+
+</div>
+</section>
