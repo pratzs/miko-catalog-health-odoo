@@ -261,11 +261,50 @@
   </div>
 
   <div class="ch-sec">
+    <h2>It runs on the Odoo you actually have</h2>
+    <p class="lead">Six series, from 14.0 to 19.0. Most modules on this store support
+    three. Upgrading Odoo is a project, not an afternoon, so a business sitting on 14
+    or 15 is usually sitting there for a reason, and it should not lock them out of a
+    tool this small.</p>
+
+    <div class="ch-table-scroll">
+      <table>
+        <thead>
+          <tr><th>Odoo series</th><th>Released</th><th>Module version</th><th>Test result</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>19.0</strong></td><td>2025</td><td><code>19.0.1.0.0</code></td><td>20 of 20 passing</td></tr>
+          <tr><td><strong>18.0</strong></td><td>2024</td><td><code>18.0.1.0.0</code></td><td>20 of 20 passing</td></tr>
+          <tr><td><strong>17.0</strong></td><td>2023</td><td><code>17.0.1.0.0</code></td><td>20 of 20 passing</td></tr>
+          <tr><td><strong>16.0</strong></td><td>2022</td><td><code>16.0.1.0.0</code></td><td>20 of 20 passing</td></tr>
+          <tr><td><strong>15.0</strong></td><td>2021</td><td><code>15.0.1.0.0</code></td><td>20 of 20 passing</td></tr>
+          <tr><td><strong>14.0</strong></td><td>2020</td><td><code>14.0.1.0.0</code></td><td>20 of 20 passing</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ch-cap">Each series is a separate build, installed into a clean database of
+    that exact version and run through the full test suite before release. None of these
+    numbers is an assumption carried over from another version.</p>
+
+    <p>Two behaviours genuinely differ across that range, and the module adapts rather
+    than pretending they do not:</p>
+    <ul class="ch-list">
+      <li><strong>Duplicate barcodes.</strong> On 14 and 15, Postgres refuses a duplicate
+      outright, so one cannot exist. From 16 the check moved into Python, which a bulk
+      import can bypass. The duplicate report therefore matters on 16 and later, and is
+      simply never triggered on 14 and 15.</li>
+      <li><strong>Product types.</strong> What counts as a service, and therefore has no
+      barcode to check, is read from your Odoo rather than hard coded, so the exclusion
+      stays correct as the field changes shape between versions.</li>
+    </ul>
+  </div>
+
+  <div class="ch-sec">
     <h2>Technical notes</h2>
     <div class="ch-table-scroll">
       <table>
         <tbody>
-          <tr><th>Odoo versions</th><td><strong>14.0 through 19.0</strong>, Community and Enterprise. Six series, each built and tested separately.</td></tr>
+          <tr><th>Odoo versions</th><td><strong>14.0, 15.0, 16.0, 17.0, 18.0 and 19.0</strong>, Community and Enterprise</td></tr>
           <tr><th>Hosting</th><td>Odoo.sh and on premise. Odoo Online cannot run third party modules that contain Python, which includes this one, per the Odoo Apps FAQ.</td></tr>
           <tr><th>Depends on</th><td><code>product</code> only. No Inventory or Sales requirement.</td></tr>
           <tr><th>Adds</th><td>Five stored, indexed fields on <code>product.template</code></td></tr>
