@@ -21,7 +21,7 @@ faults that are invisible in a normal list view.
 Free and open source, from Tripster Developers.
 """,
     'author': 'Tripster Developers',
-    'website': 'https://tripsterdevelopers.com/odoo/',
+    'website': 'https://miko.co.nz/odoo/catalog-audit',
     'support': 'hello@tripsterdevelopers.com',
     'category': 'Inventory/Inventory',
     'license': 'LGPL-3',
