@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 {
     'name': 'Barcode Validator & Catalog Audit (Miko)',
-    'version': '16.0.1.0.0',
-    'summary': 'Find broken barcodes and incomplete products before they cost you a sale',
+    'version': '16.0.1.0.1',
+    'summary': 'Barcode validator and barcode check for EAN13, EAN-8, UPC-A and GTIN-14 check digits, plus a catalog audit for product data quality: find broken barcodes and incomplete products before they cost you a sale',
     'description': """
 Catalog Health
 ================
